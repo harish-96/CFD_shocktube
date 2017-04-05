@@ -30,10 +30,10 @@ class FTCS:
         return tmp
 
     @jit
-    def step(self, q_step, e_step, t_step, art_viscosity):
+    def step(self, q_step, e_step, t_step, dt, art_viscosity):
         mu2, mu4 = art_viscosity
         dq = self.central_diff(q_step, e_step) +\
-            self.dissipation_2(q_step, mu2) + self.dissipation_4(q_step, mu4)
+            dt * self.dissipation_2(q_step, mu2) + dt * self.dissipation_4(q_step, mu4)
         q_step1 = np.zeros_like(q_step)
         q_step1 = q_step + dq
         left_bc, right_bc = self.bc(t_step + 1, q_step1)

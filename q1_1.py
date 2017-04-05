@@ -39,8 +39,8 @@ def bc(t, q_step):
 
 
 scheme = FTCS
-shock_tube = solver(gridpts=50, dtdx=0.0002, scheme=scheme,
-                    ic=ic, bc=bc, spaceDomain=[-50, 50], tmax=50)
+shock_tube = solver(gridpts=50, dtdx=0.0001, scheme=scheme,
+                    ic=ic, bc=bc, spaceDomain=[0, 100000], tmax=5000)
 print(shock_tube.grid.dtdx)
 
 shock_tube.animate(shock_tube.grid.timesteps)

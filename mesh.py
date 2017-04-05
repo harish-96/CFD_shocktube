@@ -37,25 +37,25 @@ class mesh:
         qt_step[2] = (gamma - 1) * (q_step[2] - q_step[1]**2 / 2 / q_step[0])
         return qt_step
 
-    @jit
-    def compute_X(self, t):
-        qt = self.compute_Qt(t)
-        u = qt[1]
-        c = np.sqrt(gamma * qt[2] / qt[0])
-        row3 = [0.5 * u**2, c**2 / (gamma - 1) + 0.5 * u **
-                2 + c * u, c**2 / (gamma - 1) + 0.5 * u**2 - c * u]
-        X = np.array([[1, 1, 1], [u, u + c, u - c], row3])
-        return X
+    # @jit
+    # def compute_X(self, t):
+    #     qt = self.compute_Qt(t)
+    #     u = qt[1]
+    #     c = np.sqrt(gamma * qt[2] / qt[0])
+    #     row3 = [0.5 * u**2, c**2 / (gamma - 1) + 0.5 * u **
+    #             2 + c * u, c**2 / (gamma - 1) + 0.5 * u**2 - c * u]
+    #     X = np.array([[1, 1, 1], [u, u + c, u - c], row3])
+    #     return X
 
-    @jit
-    def compute_Xinv(self, t):
-        X = self.compute_X(t)
-        return np.linalg.inv(X)
+    # @jit
+    # def compute_Xinv(self, t):
+    #     X = self.compute_X(t)
+    #     return np.linalg.inv(X)
 
-    def plot_step(self, t_step):
-        qt = self.compute_Qt(t_step)
-        fig, axarr = plt.subplots(3, sharex=True)
-        axarr[0].plot(self.x, qt[0])
-        axarr[1].plot(self.x, qt[1])
-        axarr[2].plot(self.x, qt[2])
-        plt.show()
+    # def plot_step(self, t_step):
+    #     qt = self.compute_Qt(t_step)
+    #     fig, axarr = plt.subplots(3, sharex=True)
+    #     axarr[0].plot(self.x, qt[0])
+    #     axarr[1].plot(self.x, qt[1])
+    #     axarr[2].plot(self.x, qt[2])
+    #     plt.show()

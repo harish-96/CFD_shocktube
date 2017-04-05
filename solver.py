@@ -18,12 +18,15 @@ class solver:
     def solve(self, t_step, art_viscosity):
         q_step = self.grid.Q[:, :, t_step]
         e_step = self.grid.E[:, :, t_step]
+        dt = self.grid.t[1] - self.grid.t[0]
+        # dt = 1
         self.grid.Q[:, :, t_step +
-                    1] = self.scheme.step(q_step, e_step, t_step, art_viscosity)
+                    1] = self.scheme.step(q_step, e_step, t_step, dt, art_viscosity)
         self.grid.E[:, :, t_step +
                     1] = self.grid.compute_E(t_step + 1)
 
-    def animate(self, timesteps, art_viscosity=[0.01, 0.001], repeat=False):
+    def animate(self, timesteps, art_viscosity=[0.01, 0.001],
+                save=False, filename='animation', repeat=False):
         interval = self.grid.t[1] - self.grid.t[0]
         fig, axarr = plt.subplots(3, sharex=True)
         qt = self.grid.compute_Qt(0)
@@ -36,12 +39,14 @@ class solver:
         axarr[2].set_ylabel('P')
         plt.xlabel('x')
         anim = animation.FuncAnimation(fig, self.update_line,
-                                       frames=timesteps,
+                                       frames=timesteps - 1,
                                        interval=interval,
                                        repeat=False,
                                        fargs=(fig, axarr, lines,
                                               art_viscosity))
         plt.show()
+        if save:
+            anim.save(filename + '.mp4', extra_args=['-vcodec', 'libx264'])
 
     def update_line(self, i, fig, axarr, lines, art_viscosity):
         self.solve(i, art_viscosity)

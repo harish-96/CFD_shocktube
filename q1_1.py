@@ -38,14 +38,9 @@ def bc(t, q_step):
     return [q_l, q_r]
 
 
-scheme = Lax_Fred
+scheme = FTCS
 shock_tube = solver(gridpts=50, dtdx=0.0002, scheme=scheme,
-                    ic=ic, bc=bc, spaceDomain=100, timeDomain=50)
+                    ic=ic, bc=bc, spaceDomain=[-50, 50], tmax=50)
 print(shock_tube.grid.dtdx)
 
 shock_tube.animate(shock_tube.grid.timesteps)
-# anim.save('blah.mp4', fps=200, extra_args=['-vcodec', 'libx264'])
-# for i in range(10000 - 1):
-#     shock_tube.FTCS_step(bc, i)
-#     if i % 100 == 0:
-#         shock_tube.grid.plot_step(i)

@@ -9,13 +9,14 @@ cv = 287 / (gamma - 1)
 
 class mesh:
 
-    def __init__(self, gridpts, dtdx, timeDomain, spaceDomain):
-        self.x = np.linspace(0, spaceDomain, gridpts)
-        self.t = np.arange(0, timeDomain, dtdx * spaceDomain / gridpts)
+    def __init__(self, gridpts, dtdx, tmax, spaceDomain):
+        self.x = np.linspace(spaceDomain[0], spaceDomain[1], gridpts)
+        self.t = np.arange(
+            0, tmax, dtdx * (spaceDomain[-1] - spaceDomain[0]) / gridpts)
         self.timesteps = len(self.t)
         self.E = np.zeros((3, gridpts, self.timesteps))
         self.Q = np.zeros((3, gridpts, self.timesteps))
-        self.dtdx = timeDomain / self.timesteps / (spaceDomain / gridpts)
+        self.dtdx = dtdx
 
     @jit
     def compute_E(self, t):

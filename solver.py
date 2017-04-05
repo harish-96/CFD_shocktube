@@ -5,8 +5,8 @@ from matplotlib import animation
 class solver:
 
     def __init__(self, gridpts, dtdx, ic, scheme,
-                 bc, timeDomain=1, spaceDomain=1):
-        self.grid = mesh(gridpts, dtdx, timeDomain, spaceDomain)
+                 bc, tmax=50, spaceDomain=[0, 100]):
+        self.grid = mesh(gridpts, dtdx, tmax, spaceDomain)
         self.grid.Q[:, :, 0] = ic(self.grid.x)
         self.bc = bc
         left_bc, right_bc = bc(0, self.grid.Q[:, :, 0])

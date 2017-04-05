@@ -37,6 +37,7 @@ def ic(x):
 
 def bc(t, q_step):
     u_l = q_step[1, 1] / q_step[0, 1]
+    # u_l = 0
     t_l = ti_l - u_l**2 / 2 / (gamma * cv)
     p_l = pi_l * (t_l / ti_l)**(gamma / (gamma - 1))
     q1_l = p_l / 287 / t_l
@@ -44,6 +45,7 @@ def bc(t, q_step):
     q3_l = q1_l * (cv * t_l + u_l**2 / 2)
 
     u_r = q_step[1, -2] / q_step[0, -2]
+    # u_r = 0
     t_r = ti_r - u_r**2 / 2 / (gamma * cv)
     p_r = pi_r * (t_r / ti_r)**(gamma / (gamma - 1))
     q1_r = p_r / 287 / t_r
@@ -61,4 +63,4 @@ shock_tube = solver(gridpts=100, dtdx=0.005, scheme=scheme,
 print(shock_tube.grid.dtdx)
 
 shock_tube.animate(shock_tube.grid.timesteps,
-                   art_viscosity=[50, 5], save=False)
+                   art_viscosity=[30, 3], save=False)

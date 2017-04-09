@@ -26,7 +26,7 @@ class solver:
                     1] = self.grid.compute_E(t_step + 1)
 
     def animate(self, timesteps, art_viscosity=[0.01, 0.001],
-                save=False, filename='animation', repeat=False):
+                save=False, filename='animation', repeat=False, fps=None):
         interval = self.grid.t[1] - self.grid.t[0]
         fig, axarr = plt.subplots(3, sharex=True)
         qt = self.grid.compute_Qt(0)
@@ -46,13 +46,15 @@ class solver:
                                               art_viscosity))
         plt.show()
         if save:
-            anim.save(filename + '.mp4', extra_args=['-vcodec', 'libx264'])
+            anim.save(filename + '.mp4', extra_args=['-vcodec', 'libx264'], fps=fps)
 
     def update_line(self, i, fig, axarr, lines, art_viscosity):
+        # for j in range(100):
+        #     self.solve(100 * i + j, art_viscosity)
         self.solve(i, art_viscosity)
         qt = self.grid.compute_Qt(i)
         lines[0].set_data(self.grid.x, qt[0])
-        axarr[1].set_ylim([0, 1.5 * np.max(qt[1])])
+        axarr[1].set_ylim([0, 1.5 * np.max(qt[1]) + np.finfo(float).eps])
         lines[1].set_data(self.grid.x, qt[1])
         lines[2].set_data(self.grid.x, qt[2])
         return lines

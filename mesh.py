@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 from numba import jit
 
 gamma = 1.4
-cp = gamma * 287 / (gamma - 1)
-cv = 287 / (gamma - 1)
+R = 287
+cp = gamma * R / (gamma - 1)
+cv = R / (gamma - 1)
 
 
 class mesh:
@@ -52,10 +53,26 @@ class mesh:
     #     X = self.compute_X(t)
     #     return np.linalg.inv(X)
 
-    # def plot_step(self, t_step):
-    #     qt = self.compute_Qt(t_step)
-    #     fig, axarr = plt.subplots(3, sharex=True)
-    #     axarr[0].plot(self.x, qt[0])
-    #     axarr[1].plot(self.x, qt[1])
-    #     axarr[2].plot(self.x, qt[2])
-    #     plt.show()
+    def plot_step(self, time, energy=False):
+        t_step = (np.abs(self.t - time)).argmin()
+        qt = self.compute_Qt(t_step)
+        if energy:
+            fig, axarr = plt.subplots(4, sharex=True)
+            en = cv * qt[2] / R / qt[0]
+            axarr[3].plot(self.x, en)
+            axarr[3].set_ylabel(r'$E\_t$')
+            axarr[0].plot(self.x, qt[0])
+            axarr[0].set_ylabel(r'$\rho$')
+            axarr[1].plot(self.x, qt[1])
+            axarr[1].set_ylabel('u')
+            axarr[2].plot(self.x, qt[2])
+            axarr[2].set_ylabel('P')
+        else:
+            fig, axarr = plt.subplots(3, sharex=True)
+            axarr[0].plot(self.x, qt[0])
+            axarr[0].set_ylabel(r'$\rho$')
+            axarr[1].plot(self.x, qt[1])
+            axarr[1].set_ylabel('u')
+            axarr[2].plot(self.x, qt[2])
+            axarr[2].set_ylabel('P')
+        plt.show()

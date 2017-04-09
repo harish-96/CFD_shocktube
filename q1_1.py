@@ -29,6 +29,7 @@ def bc(t, q_step):
 
     u_r = q_step[1, -2] / q_step[0, -2]
     t_r = t_0 - u_r**2 / 2 / (gamma * cv)
+    # p_r = p_r0 * (t_l / t_0)**(gamma / (gamma - 1))
     q1_r = p_r / 287 / t_r
     q2_r = q1_r * u_r
     q3_r = q1_r * (cv * t_r + u_r**2 / 2)
@@ -38,9 +39,11 @@ def bc(t, q_step):
     return [q_l, q_r]
 
 
-scheme = FTCS
+scheme = Lax_Fred
 shock_tube = solver(gridpts=50, dtdx=0.0001, scheme=scheme,
-                    ic=ic, bc=bc, spaceDomain=[0, 100000], tmax=5000)
+                    ic=ic, bc=bc, spaceDomain=[0, 1], tmax=0.2)
 print(shock_tube.grid.dtdx)
 
-shock_tube.animate(shock_tube.grid.timesteps)
+shock_tube.animate(shock_tube.grid.timesteps, save=True,
+                   filename="q1_1_Lax_fred", art_viscosity=[0.01, .001],
+                   fps=30)

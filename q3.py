@@ -36,18 +36,24 @@ def ic(x):
 
 
 def bc(t, q_step):
-    u_l = q_step[1, 1] / q_step[0, 1]
+    # u_l = q_step[1, 1] / q_step[0, 1]
+    qt_step = np.ones_like(q_step)
+    qt_step[0] = q_step[0]
+    qt_step[1] = q_step[1] / q_step[0]
+    qt_step[2] = (gamma - 1) * (q_step[2] - q_step[1]**2 / 2 / q_step[0])
+
+    u_l = -q_step[1, 1] / q_step[0, 1]
     # u_l = 0
-    t_l = ti_l - u_l**2 / 2 / (gamma * cv)
-    p_l = pi_l * (t_l / ti_l)**(gamma / (gamma - 1))
+    t_l = qt_step[2, 1] / R / qt_step[0, 1]
+    p_l = qt_step[2, 1]
     q1_l = p_l / 287 / t_l
     q2_l = q1_l * u_l
     q3_l = q1_l * (cv * t_l + u_l**2 / 2)
 
-    u_r = q_step[1, -2] / q_step[0, -2]
+    u_r = -q_step[1, -2] / q_step[0, -2]
     # u_r = 0
-    t_r = ti_r - u_r**2 / 2 / (gamma * cv)
-    p_r = pi_r * (t_r / ti_r)**(gamma / (gamma - 1))
+    t_r = qt_step[2, -2] / R / qt_step[0, -2]
+    p_r = qt_step[2, -2]
     q1_r = p_r / 287 / t_r
     q2_r = q1_r * u_r
     q3_r = q1_r * (cv * t_r + u_r**2 / 2)
@@ -58,9 +64,11 @@ def bc(t, q_step):
 
 
 scheme = FTCS
-shock_tube = solver(gridpts=100, dtdx=0.005, scheme=scheme,
-                    ic=ic, bc=bc, spaceDomain=[-0.5, 0.5], tmax=5)
+shock_tube = solver(gridpts=500, dtdx=0.05, scheme=scheme,
+                    ic=ic, bc=bc, spaceDomain=[-.5, .5], tmax=5)
 print(shock_tube.grid.dtdx)
+dt = shock_tube.grid.t[1] - shock_tube.grid.t[0]
 
-shock_tube.animate(shock_tube.grid.timesteps,
-                   art_viscosity=[30, 3], save=False)
+shock_tube.animate(int(shock_tube.grid.timesteps),
+                   art_viscosity=[0.007, 0.0007],
+                   save=True, filename='q3_anim', fps=60)
